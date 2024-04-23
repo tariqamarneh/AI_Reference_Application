@@ -1,14 +1,14 @@
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.common import mongo_logger
 from app.common.database import get_connection
-from app.routers.normal_chat_flow import router as normal_chat_flow_router
 from app.routers.rag_flow import router as rag_flow_router
-
-import logging
+from app.routers.api_flow import router as api_flow_router
+from app.services.langchain.chains import retriever_singleton
+from app.routers.normal_flow import router as normal_flow_router
 
 
 @asynccontextmanager
@@ -17,6 +17,9 @@ async def lifespan(app: FastAPI):
         connection = get_connection()
         db = connection["AI_Reference_Application"]
         await db.logs.find_one()
+
+        await retriever_singleton.get_retriever()
+
         yield
     except:
         logging.error("Failed to connect to the database")
@@ -32,6 +35,10 @@ app = FastAPI(
             "name": "openai",
             "description": "OpenAI API's",
         },
+        {
+            "name": "Upload files",
+            "description": "Upload files",
+        },
     ],
     lifespan=lifespan,
 )
@@ -44,8 +51,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(normal_chat_flow_router)
+app.include_router(normal_flow_router)
 app.include_router(rag_flow_router)
+app.include_router(api_flow_router)
 
 
 @app.get("/")

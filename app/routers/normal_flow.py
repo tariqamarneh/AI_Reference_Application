@@ -1,18 +1,19 @@
-from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, HTTPException, Header
 
-from app.routers.utils import send_message_to_chat_flow
 from app.common import mongo_logger
+from app.routers.utils import send_message_to_chat_flow
 
 
 router = APIRouter()
 
 
 @router.post("/normal_chat_flow", tags=["openai"])
-async def generate_output(text: str) -> StreamingResponse:
+async def generate_output(text: str, uid: str = Header(None)) -> StreamingResponse:
+    print(uid)
     try:
         return StreamingResponse(
-            send_message_to_chat_flow(text), media_type="text/event-stream"
+            send_message_to_chat_flow(text, uid), media_type="text/event-stream"
         )
     except Exception as e:
         mongo_logger.error(e)

@@ -1,15 +1,10 @@
-from langchain.prompts import PromptTemplate
+from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 
-system_message = """
-You are a Model having a chat with a human
-
-{hist}
-Human: {text}
-Chatbot:
-"""
-
-
-normal_chat_prompt = PromptTemplate(
-    template=system_message, input_variables=["hist", "text"]
+normal_chat_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", "You are a chatbot having a chat with a human, Be polite and respectful."),
+        MessagesPlaceholder(variable_name="hist"),
+        ("human", "{text}"),
+    ]
 )

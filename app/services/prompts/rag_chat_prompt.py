@@ -1,4 +1,4 @@
-from langchain.prompts import PromptTemplate
+from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 system_message = """
 ROLE:
@@ -15,16 +15,19 @@ IMPORTANT:
 NOTE:
 - The conversation should be polite and respectful.
 - By friendly and professional.
-- DON'T answer questions that are not related to the context, only answer greatings and questions related to the context.
+- DON'T answer questions that are not related to the context, only answer greatings and questions related to the context or the CHAT HISTORY.
 
-CHAT HISTORY:
-{history}
 
 context: {context}
 
 question: {question}
 """
 
-rag_chat_prompt = PromptTemplate(
-    template=system_message, input_variables=["history", "context", "question"]
+
+rag_chat_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", system_message),
+        MessagesPlaceholder(variable_name="hist"),
+        ("human", "{question}"),
+    ]
 )

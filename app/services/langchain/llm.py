@@ -15,3 +15,15 @@ def get_llm(callback):
         callbacks=[callback],
     )
     return azure_llm
+
+
+def get_llm_app():
+    azure_llm = AzureChatOpenAI(
+        deployment_name="gpt4",
+        azure_endpoint=AZURE_ENDPOINT,
+        openai_api_key=OPENAI_API_KEY,
+        api_version="2024-02-15-preview",
+        temperature=0,
+        model="gpt-4",
+    )
+    return azure_llm
