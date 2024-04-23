@@ -1,5 +1,4 @@
 from langchain_core.prompts.prompt import PromptTemplate
-from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 api_docs = """
 BASE URL: https://api.open-meteo.com/
@@ -65,15 +64,11 @@ Here is the response from the API:
 
 Summarize this response to answer the original question.
 If ther response is null, say "Sorry, i can only provide information about the weather forecast."
-You have a chat memory, you can use it if needed.
 
 Summary:"""
 )
 
-
-API_RESPONSE_PROMPT = ChatPromptTemplate.from_messages(
-    [
-        ("system", API_RESPONSE_PROMPT_TEMPLATE),
-        MessagesPlaceholder(variable_name="hist"),
-    ]
+API_RESPONSE_PROMPT = PromptTemplate(
+    input_variables=["api_docs", "question", "api_url", "api_response"],
+    template=API_RESPONSE_PROMPT_TEMPLATE,
 )
