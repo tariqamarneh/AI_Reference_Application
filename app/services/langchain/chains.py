@@ -7,7 +7,7 @@ from langchain_mongodb.chat_message_histories import MongoDBChatMessageHistory
 
 from app.config import connection_string
 from app.services.langchain.llm import get_llm, get_llm_app
-from app.services.langchain.retriever import RetrieverSingleton
+from app.services.langchain.retriever import Retriever
 from app.services.prompts.normal_chat_prompt import normal_chat_prompt
 from app.services.prompts.rag_chat_prompt import rag_chat_prompt
 from app.services.prompts.api_chat_prompt import (
@@ -15,6 +15,7 @@ from app.services.prompts.api_chat_prompt import (
     API_URL_PROMPT,
     API_RESPONSE_PROMPT,
 )
+retriever = Retriever()
 
 
 def chat_flow_chain(callback):
@@ -41,12 +42,10 @@ def chat_flow_chain(callback):
     return chain
 
 
-retriever_singleton = RetrieverSingleton()
-
-
 async def rag_flow_chain(callback, text):
     llm = get_llm(callback)
-    retriever = retriever_singleton.retriever
+    retriever = Retriever()
+    retriever = retriever.get_retriever()
     context = retriever.invoke(input=text)
     context = "\n".join([doc.page_content for doc in context])
     chain = LLMChain(
@@ -78,7 +77,6 @@ def api_flow_chain(callback, uid):
         database_name="AI_Reference_Application",
         collection_name="chat_message_histories",
     ).messages
-
     chain = APIChain(
         name="api_flow",
         verbose=True,

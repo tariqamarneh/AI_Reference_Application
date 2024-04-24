@@ -5,9 +5,17 @@ from fastapi.responses import HTMLResponse, StreamingResponse, JSONResponse
 
 from app.common import connection, mongo_logger
 from app.routers.utils import send_message_to_rag_flow
+from app.services.langchain.chains import retriever
+
 
 
 router = APIRouter()
+
+@router.get("/init_vectorstore")
+async def init_vectorstore():
+    retriever.clear()
+    await retriever.init_retriever()
+    return {"message": "Vectorstore initialized successfully."}
 
 
 @router.post("/rag_chat_flow", tags=["openai"])

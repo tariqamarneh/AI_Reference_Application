@@ -7,7 +7,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.common.database import get_connection
 from app.routers.rag_flow import router as rag_flow_router
 from app.routers.api_flow import router as api_flow_router
-from app.services.langchain.chains import retriever_singleton
 from app.routers.normal_flow import router as normal_flow_router
 
 
@@ -17,8 +16,6 @@ async def lifespan(app: FastAPI):
         connection = get_connection()
         db = connection["AI_Reference_Application"]
         await db.logs.find_one()
-
-        await retriever_singleton.get_retriever()
 
         yield
     except:

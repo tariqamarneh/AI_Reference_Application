@@ -19,8 +19,6 @@ NOTE:
 
 
 context: {context}
-
-question: {question}
 """
 
 
