@@ -63,7 +63,7 @@ Here is the response from the API:
 {api_response}
 
 Summarize this response to answer the original question.
-If ther response is null, say "Sorry, i can only provide information about the weather forecast."
+If the response is null, Go back to the question, and answer it if it's greatings, or replay with 'I don't know the answer to that question' if the question about a specific topic."
 
 Summary:"""
 )
